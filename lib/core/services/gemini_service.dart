@@ -8,12 +8,19 @@ class GeminiService {
     apiKey: _apiKey,
   );
 
+  static String? _cachedAdvice;
+
   /// Capa de Personalidad y Memoria
   static Future<String> getDorysAdvice({
     required double incomes,
     required double expenses,
     List<Map<String, dynamic>> recentMovements = const [],
+    bool forceRefresh = false,
   }) async {
+    if (!forceRefresh && _cachedAdvice != null && recentMovements.isEmpty) {
+      return _cachedAdvice!;
+    }
+    
     final balance = incomes - expenses;
     
     // Prompt Base (Personalidad)
@@ -35,7 +42,11 @@ Sé muy simpática, algo olvidadiza de forma graciosa y da un consejo amable. Pu
     try {
       final content = [Content.text(prompt)];
       final response = await _model.generateContent(content);
-      return response.text ?? 'Mmm... se me olvidó qué te iba a decir. ¡Ah, sí! Ahorra más.';
+      final text = response.text ?? 'Mmm... se me olvidó qué te iba a decir. ¡Ah, sí! Ahorra más.';
+      if (recentMovements.isEmpty) {
+        _cachedAdvice = text;
+      }
+      return text;
     } catch (e) {
       final str = e.toString().toLowerCase();
       if (str.contains('quota') || str.contains('exceeded') || str.contains('429')) {

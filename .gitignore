@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+# Private environment variables
+.env
+.env.secret
+*.env
+
+# Database scripts with sensitive data
+supabase_reminders.sql

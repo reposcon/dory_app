@@ -41,8 +41,7 @@ class _DoryChatPanelState extends State<DoryChatPanel> {
     final advice = await GeminiService.getDorysAdvice(
       incomes: widget.incomes,
       expenses: widget.expenses,
-      recentMovements: widget.recentMovements,
-    );
+    ); // No pasamos recentMovements para pedir el advice estático
     if (mounted) {
       setState(() {
         _messages.add(_ChatMessage(text: advice, isUser: false));
